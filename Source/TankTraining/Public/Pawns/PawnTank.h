@@ -9,6 +9,7 @@
 class UBoxComponent;
 class USpringArmComponent;
 class UCameraComponent;
+class AProjectileBase;
 
 UCLASS()
 class TANKTRAINING_API APawnTank : public APawn
@@ -17,6 +18,7 @@ class TANKTRAINING_API APawnTank : public APawn
 
 private:
 	// COMPONENTS
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Componenets", meta = (AllowPrivateAccess = "true"))
 		UBoxComponent* BoxComp;
 
@@ -33,13 +35,25 @@ private:
 		USceneComponent* ProjectileSpawnPoint;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Componenets", meta = (AllowPrivateAccess = "true"))
+		USceneComponent* WheelBLComp;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Componenets", meta = (AllowPrivateAccess = "true"))
 		UStaticMeshComponent* WheelBLMesh;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Componenets", meta = (AllowPrivateAccess = "true"))
+		USceneComponent* WheelBRComp;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Componenets", meta = (AllowPrivateAccess = "true"))
 		UStaticMeshComponent* WheelBRMesh;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Componenets", meta = (AllowPrivateAccess = "true"))
+		USceneComponent* WheelFLComp;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Componenets", meta = (AllowPrivateAccess = "true"))
 		UStaticMeshComponent* WheelFLMesh;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Componenets", meta = (AllowPrivateAccess = "true"))
+		USceneComponent* WheelFRComp;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Componenets", meta = (AllowPrivateAccess = "true"))
 		UStaticMeshComponent* WheelFRMesh;
@@ -50,10 +64,23 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Componenets", meta = (AllowPrivateAccess = "true"))
 		UCameraComponent* Camera;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement", meta = (AllowPrivateAccess = "true"))
+		float MoveSpeed = 100.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement", meta = (AllowPrivateAccess = "true"))
+		float RotateSpeed = 100.0f;
+
+	APlayerController* PlayerControllerRef;
+	FVector MoveDirection;
+	FQuat RotationDirection;
+	void CalculateMoveInput(float Value);
+	void CalculateRotateInput(float Value);
+	void Move();
+	void Rotate();
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
+	void RotateTurret(FVector LookAtTarget);
 public:
 	// Sets default values for this pawn's properties
 	APawnTank();
