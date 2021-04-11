@@ -15,36 +15,33 @@ APawnTank::APawnTank()
 	BaseMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Base Mesh"));
 	BaseMesh->SetupAttachment(RootComponent);
 
+	TurretComp = CreateDefaultSubobject<USceneComponent>(TEXT("Turret Comp"));
+	TurretComp->SetupAttachment(BaseMesh);
 	TurretMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Turret Mesh"));
-	TurretMesh->SetupAttachment(BaseMesh);
+	TurretMesh->SetupAttachment(TurretComp);
 
 	BarrelMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Barrel Mesh"));
 	BarrelMesh->SetupAttachment(TurretMesh);
-
 	ProjectileSpawnPoint = CreateDefaultSubobject<USceneComponent>(TEXT("Projectile Spawn Point"));
 	ProjectileSpawnPoint->SetupAttachment(BarrelMesh);
 
 	WheelBLComp = CreateDefaultSubobject<USceneComponent>(TEXT("Wheel BL Comp"));
 	WheelBLComp->SetupAttachment(BaseMesh);
-
 	WheelBLMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Wheel BL Mesh"));
 	WheelBLMesh->SetupAttachment(WheelBLComp);
 
 	WheelBRComp = CreateDefaultSubobject<USceneComponent>(TEXT("Wheel BR Comp"));
 	WheelBRComp->SetupAttachment(BaseMesh);
-
 	WheelBRMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Wheel BR Mesh"));
 	WheelBRMesh->SetupAttachment(WheelBRComp);
 
 	WheelFLComp = CreateDefaultSubobject<USceneComponent>(TEXT("Wheel FL Comp"));
 	WheelFLComp->SetupAttachment(BaseMesh);
-
 	WheelFLMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Wheel FL Mesh"));
 	WheelFLMesh->SetupAttachment(WheelFLComp);
 
 	WheelFRComp = CreateDefaultSubobject<USceneComponent>(TEXT("Wheel FR Comp"));
 	WheelFRComp->SetupAttachment(BaseMesh);
-
 	WheelFRMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Wheel FR Mesh"));
 	WheelFRMesh->SetupAttachment(WheelFRComp);
 

@@ -26,6 +26,8 @@ private:
 		UStaticMeshComponent* BaseMesh;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Componenets", meta = (AllowPrivateAccess = "true"))
+		USceneComponent* TurretComp;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Componenets", meta = (AllowPrivateAccess = "true"))
 		UStaticMeshComponent* TurretMesh;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Componenets", meta = (AllowPrivateAccess = "true"))
