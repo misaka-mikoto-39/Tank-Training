@@ -82,13 +82,14 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement", meta = (AllowPrivateAccess = "true"))
 		float RotateSpeed = 100.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement", meta = (AllowPrivateAccess = "true"))
+		float TurretRotateSpeed = 25.0f;
 
 	APlayerController* PlayerControllerRef;
 	FVector MoveDirection;
 	WheelRotation LeftWheels = NONE;
 	WheelRotation RightWheels = NONE;
 	FQuat RotationDirection;
-	FRotator TurretTargetRotation;
 
 	void CalculateMoveInput(float Value);
 	void CalculateRotateInput(float Value);

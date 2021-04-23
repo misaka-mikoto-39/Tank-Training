@@ -94,7 +94,6 @@ void APawnTank::CalculateRotateInput(float Value)
 void APawnTank::Move()
 {
 	AddActorLocalOffset(MoveDirection, true);
-	
 }
 
 void APawnTank::Rotate()
@@ -115,7 +114,7 @@ void APawnTank::RotateWheels()
 	{
 		RotateAmount = 1 * MoveSpeed * GetWorld()->DeltaTimeSeconds;
 	}
-	Rotation = FRotator(0, 0, RotateAmount);
+	Rotation = FRotator(RotateAmount, 0, 0);
 	WheelFLComp->AddLocalRotation(FQuat(Rotation));
 	WheelBLComp->AddLocalRotation(FQuat(Rotation));
 
@@ -128,10 +127,10 @@ void APawnTank::RotateWheels()
 	{
 		RotateAmount = 1 * MoveSpeed * GetWorld()->DeltaTimeSeconds;
 	}
-	Rotation = FRotator(0, 0, RotateAmount);
+	Rotation = FRotator(RotateAmount, 0, 0);
 	WheelFRComp->AddLocalRotation(FQuat(Rotation));
 	WheelBRComp->AddLocalRotation(FQuat(Rotation));
-	
+
 	// Reset Wheels Rotation
 	LeftWheels = NONE;
 	RightWheels = NONE;
@@ -146,12 +145,14 @@ void APawnTank::BeginPlay()
 
 void APawnTank::RotateTurret(FVector LookAtTarget)
 {
-	FVector LookAtTargetClean = FVector(LookAtTarget.X, LookAtTarget.Y, TurretMesh->GetComponentLocation().Z);
-	FVector StartLocation = TurretMesh->GetComponentLocation();
-	FRotator TurretRotation = FVector(LookAtTargetClean - StartLocation).Rotation();
+	//CurrentYaw = FMath::FInterpConstantTo(CurrentYaw, TargetYaw, DeltaTime, 45.f);
+	//FVector LookAtTargetClean = FVector(LookAtTarget.X, LookAtTarget.Y, TurretMesh->GetComponentLocation().Z);
+	FRotator TurretRotation = TurretMesh->GetComponentRotation();
+	//FRotator TurretRotation = FVector(LookAtTargetClean - StartLocation).Rotation();
+	TurretRotation.Yaw = FMath::FInterpConstantTo(TurretRotation.Yaw, LookAtTarget.Rotation().Yaw, GetWorld()->DeltaTimeSeconds, TurretRotateSpeed);
 	UE_LOG(LogTemp, Warning, TEXT("TurretRotation: %s"), *TurretRotation.ToString());
 	TurretMesh->SetWorldRotation(TurretRotation);
-	//SpringArm->SetWorldRotation(FRotator(SpringArm->GetComponentRotation().Pitch, TurretRotation.Yaw - 90, SpringArm->GetComponentRotation().Roll));
+	SpringArm->SetWorldRotation(FRotator(SpringArm->GetComponentRotation().Pitch, TurretRotation.Yaw, SpringArm->GetComponentRotation().Roll));
 }
 
 void APawnTank::Fire()
@@ -161,7 +162,7 @@ void APawnTank::Fire()
 		UE_LOG(LogTemp, Warning, TEXT("Fire"));
 		FVector SpawnLocation = ProjectileSpawnPoint->GetComponentLocation();
 		FRotator SpawnRotation = ProjectileSpawnPoint->GetComponentRotation();
-		SpawnRotation.Yaw -= 90;
+		//SpawnRotation.Yaw -= 90;
 		AProjectileBase* TempProjectile = GetWorld()->SpawnActor<AProjectileBase>(ProjectileClass, SpawnLocation, SpawnRotation);
 		TempProjectile->SetOwner(this);
 	}
