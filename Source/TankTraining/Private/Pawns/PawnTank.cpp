@@ -4,6 +4,9 @@
 #include "Components/BoxComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
+#include "Actors/ProjectileBase.h"
+#include "Kismet/GameplayStatics.h"
+
 // Sets default values
 APawnTank::APawnTank()
 {
@@ -54,6 +57,18 @@ APawnTank::APawnTank()
 void APawnTank::CalculateMoveInput(float Value)
 {
 	MoveDirection = FVector(Value * MoveSpeed * GetWorld()->DeltaTimeSeconds, 0, 0);
+	// Move forward
+	if (Value == 1)
+	{
+		LeftWheels = FORWARD;
+		RightWheels = FORWARD;
+	}
+	// Move backward
+	else if (Value == -1)
+	{
+		LeftWheels = BACKWARD;
+		RightWheels = BACKWARD;
+	}
 }
 
 void APawnTank::CalculateRotateInput(float Value)
@@ -61,16 +76,65 @@ void APawnTank::CalculateRotateInput(float Value)
 	float RotateAmount = Value * RotateSpeed * GetWorld()->DeltaTimeSeconds;
 	FRotator Rotation = FRotator(0, RotateAmount, 0);
 	RotationDirection = FQuat(Rotation);
+	// Turn right
+	if (Value == 1)
+	{
+		LeftWheels = FORWARD;
+		RightWheels = BACKWARD;
+	}
+	// Turn left
+	else if (Value == -1)
+	{
+		LeftWheels = BACKWARD;
+		RightWheels = FORWARD;
+	}
+	//(LogTemp, Warning, TEXT("RotSationDirection, %d"), *Rotation.ToString());
 }
 
 void APawnTank::Move()
 {
 	AddActorLocalOffset(MoveDirection, true);
+	
 }
 
 void APawnTank::Rotate()
 {
 	AddActorLocalRotation(RotationDirection, true);
+}
+
+void APawnTank::RotateWheels()
+{
+	float RotateAmount;
+	FRotator Rotation;
+	// Left Wheels
+	if (LeftWheels == FORWARD)
+	{
+		RotateAmount = -1 * MoveSpeed * GetWorld()->DeltaTimeSeconds;
+	}
+	else if (LeftWheels == BACKWARD)
+	{
+		RotateAmount = 1 * MoveSpeed * GetWorld()->DeltaTimeSeconds;
+	}
+	Rotation = FRotator(0, 0, RotateAmount);
+	WheelFLComp->AddLocalRotation(FQuat(Rotation));
+	WheelBLComp->AddLocalRotation(FQuat(Rotation));
+
+	// Right Wheels
+	if (RightWheels == FORWARD)
+	{
+		RotateAmount = -1 * MoveSpeed * GetWorld()->DeltaTimeSeconds;
+	}
+	else if (RightWheels == BACKWARD)
+	{
+		RotateAmount = 1 * MoveSpeed * GetWorld()->DeltaTimeSeconds;
+	}
+	Rotation = FRotator(0, 0, RotateAmount);
+	WheelFRComp->AddLocalRotation(FQuat(Rotation));
+	WheelBRComp->AddLocalRotation(FQuat(Rotation));
+	
+	// Reset Wheels Rotation
+	LeftWheels = NONE;
+	RightWheels = NONE;
 }
 
 // Called when the game starts or when spawned
@@ -85,16 +149,31 @@ void APawnTank::RotateTurret(FVector LookAtTarget)
 	FVector LookAtTargetClean = FVector(LookAtTarget.X, LookAtTarget.Y, TurretMesh->GetComponentLocation().Z);
 	FVector StartLocation = TurretMesh->GetComponentLocation();
 	FRotator TurretRotation = FVector(LookAtTargetClean - StartLocation).Rotation();
+	UE_LOG(LogTemp, Warning, TEXT("TurretRotation: %s"), *TurretRotation.ToString());
 	TurretMesh->SetWorldRotation(TurretRotation);
+	//SpringArm->SetWorldRotation(FRotator(SpringArm->GetComponentRotation().Pitch, TurretRotation.Yaw - 90, SpringArm->GetComponentRotation().Roll));
+}
+
+void APawnTank::Fire()
+{
+	if (ProjectileClass)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Fire"));
+		FVector SpawnLocation = ProjectileSpawnPoint->GetComponentLocation();
+		FRotator SpawnRotation = ProjectileSpawnPoint->GetComponentRotation();
+		SpawnRotation.Yaw -= 90;
+		AProjectileBase* TempProjectile = GetWorld()->SpawnActor<AProjectileBase>(ProjectileClass, SpawnLocation, SpawnRotation);
+		TempProjectile->SetOwner(this);
+	}
 }
 
 // Called every frame
 void APawnTank::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	Super::Tick(DeltaTime);
 	Rotate();
 	Move();
+	RotateWheels();
 	if (PlayerControllerRef)
 	{
 		FHitResult TraceHitResult;
@@ -109,6 +188,6 @@ void APawnTank::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 	PlayerInputComponent->BindAxis("MoveForward", this, &APawnTank::CalculateMoveInput);
-	PlayerInputComponent->BindAxis("MoveLeft", this, &APawnTank::CalculateRotateInput);
-	//PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &APawnTank::Fire);
+	PlayerInputComponent->BindAxis("Turn", this, &APawnTank::CalculateRotateInput);
+	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &APawnTank::Fire);
 }

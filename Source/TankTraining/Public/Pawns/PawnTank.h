@@ -11,6 +11,14 @@ class USpringArmComponent;
 class UCameraComponent;
 class AProjectileBase;
 
+UENUM()
+enum WheelRotation
+{
+	FORWARD,
+	BACKWARD,
+	NONE
+};
+
 UCLASS()
 class TANKTRAINING_API APawnTank : public APawn
 {
@@ -18,7 +26,6 @@ class TANKTRAINING_API APawnTank : public APawn
 
 private:
 	// COMPONENTS
-
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Componenets", meta = (AllowPrivateAccess = "true"))
 		UBoxComponent* BoxComp;
 
@@ -66,6 +73,10 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Componenets", meta = (AllowPrivateAccess = "true"))
 		UCameraComponent* Camera;
 
+	//VARIALES
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Projectile Type", meta = (AllowPrivateAccess = "true"))
+		TSubclassOf<AProjectileBase> ProjectileClass;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement", meta = (AllowPrivateAccess = "true"))
 		float MoveSpeed = 100.0f;
 
@@ -74,15 +85,22 @@ private:
 
 	APlayerController* PlayerControllerRef;
 	FVector MoveDirection;
+	WheelRotation LeftWheels = NONE;
+	WheelRotation RightWheels = NONE;
 	FQuat RotationDirection;
+	FRotator TurretTargetRotation;
+
 	void CalculateMoveInput(float Value);
 	void CalculateRotateInput(float Value);
 	void Move();
 	void Rotate();
+	void RotateWheels();
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	void RotateTurret(FVector LookAtTarget);
+	virtual void Fire();
+
 public:
 	// Sets default values for this pawn's properties
 	APawnTank();
