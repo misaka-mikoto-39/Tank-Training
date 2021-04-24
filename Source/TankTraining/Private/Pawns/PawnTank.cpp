@@ -5,6 +5,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Actors/ProjectileBase.h"
+#include "Components/HealthComponent.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values
@@ -54,6 +55,8 @@ APawnTank::APawnTank()
 	SpringArm->SetupAttachment(CameraComp);
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(SpringArm);
+
+	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("Health Component"));
 }
 
 void APawnTank::CalculateMoveInput(float Value)
@@ -71,6 +74,11 @@ void APawnTank::CalculateMoveInput(float Value)
 		LeftWheels = BACKWARD;
 		RightWheels = BACKWARD;
 	}
+}
+
+void APawnTank::PawnDestroyed()
+{
+	HandleDestruction();
 }
 
 void APawnTank::CalculateRotateInput(float Value)
@@ -96,7 +104,7 @@ void APawnTank::RotateCamera(float Value)
 {
 	float RotateAmount = Value * RotateSpeed * GetWorld()->DeltaTimeSeconds;
 	FRotator Rotation = FRotator(0, RotateAmount, 0);
-	CameraComp->AddLocalRotation(FQuat(Rotation), true);
+	CameraComp->AddLocalRotation(FQuat(Rotation), false);
 }
 
 void APawnTank::Move()
@@ -152,16 +160,18 @@ void APawnTank::BeginPlay()
 
 void APawnTank::RotateTurret()
 {
-	FRotator TurretRotation = TurretMesh->GetComponentRotation();
-	TurretRotation.Yaw = FMath::FInterpConstantTo(TurretRotation.Yaw, CameraComp->GetComponentRotation().Yaw, GetWorld()->DeltaTimeSeconds, TurretRotateSpeed);
-	TurretMesh->SetWorldRotation(TurretRotation);
+	FRotator TurretRotation = TurretComp->GetComponentRotation();
+	/*float RotateAmount = FMath::FInterpConstantTo(TurretRotation.Yaw, CameraComp->GetComponentRotation().Yaw, GetWorld()->DeltaTimeSeconds, TurretRotateSpeed);
+	FRotator Rotation = FRotator(0, RotateAmount, 0);
+	TurretComp->AddLocalRotation(FQuat(Rotation), true);*/
+	TurretRotation.Yaw = CameraComp->GetComponentRotation().Yaw;//FMath::FInterpConstantTo(TurretRotation.Yaw, CameraComp->GetComponentRotation().Yaw, GetWorld()->DeltaTimeSeconds, TurretRotateSpeed);
+	TurretComp->SetWorldRotation(TurretRotation);
 }
 
 void APawnTank::Fire()
 {
 	if (ProjectileClass)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Fire"));
 		FVector SpawnLocation = ProjectileSpawnPoint->GetComponentLocation();
 		FRotator SpawnRotation = ProjectileSpawnPoint->GetComponentRotation();
 		//SpawnRotation.Yaw -= 90;
@@ -188,4 +198,20 @@ void APawnTank::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	PlayerInputComponent->BindAxis("Turn", this, &APawnTank::CalculateRotateInput);
 	PlayerInputComponent->BindAxis("MouseX", this, &APawnTank::RotateCamera);
 	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &APawnTank::Fire);
+}
+
+void APawnTank::HandleDestruction()
+{
+	UGameplayStatics::SpawnEmitterAtLocation(this, DeathParticle, GetActorLocation());
+	IsAlive = false;
+	SetActorHiddenInGame(true);
+	SetActorTickEnabled(false);
+	SetActorEnableCollision(false);
+	//BoxComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	Destroy();
+}
+
+bool APawnTank::GetIsAlive()
+{
+	return IsAlive;
 }

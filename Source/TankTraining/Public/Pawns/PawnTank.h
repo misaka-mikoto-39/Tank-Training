@@ -10,6 +10,7 @@ class UBoxComponent;
 class USpringArmComponent;
 class UCameraComponent;
 class AProjectileBase;
+class UHealthComponent;
 
 UENUM()
 enum WheelRotation
@@ -77,9 +78,15 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Componenets", meta = (AllowPrivateAccess = "true"))
 		UCameraComponent* Camera;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Componenets", meta = (AllowPrivateAccess = "true"))
+		UHealthComponent* HealthComponent;
+
 	//VARIALES
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Projectile Type", meta = (AllowPrivateAccess = "true"))
 		TSubclassOf<AProjectileBase> ProjectileClass;
+
+	UPROPERTY(EditAnywhere, Category = "Effects")
+		UParticleSystem* DeathParticle;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement", meta = (AllowPrivateAccess = "true"))
 		float MoveSpeed = 100.0f;
@@ -94,6 +101,7 @@ private:
 	WheelRotation LeftWheels = NONE;
 	WheelRotation RightWheels = NONE;
 	FQuat RotationDirection;
+	bool IsAlive = true;
 
 	void CalculateMoveInput(float Value);
 	void CalculateRotateInput(float Value);
@@ -106,7 +114,7 @@ protected:
 	virtual void BeginPlay() override;
 	void RotateTurret();
 	virtual void Fire();
-
+	virtual void HandleDestruction();
 public:
 	// Sets default values for this pawn's properties
 	APawnTank();
@@ -114,6 +122,8 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	void PawnDestroyed();
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	bool GetIsAlive();
 };

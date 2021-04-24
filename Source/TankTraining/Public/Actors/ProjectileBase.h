@@ -12,7 +12,7 @@ UCLASS()
 class TANKTRAINING_API AProjectileBase : public AActor
 {
 	GENERATED_BODY()
-	
+
 private:
 	// COMPONENTS
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Componenets", meta = (AllowPrivateAccess = "true"))
@@ -27,8 +27,11 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Effects")
 		UParticleSystem* HitParticle;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Damage")
+		TSubclassOf<UDamageType> DamageType;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Move", meta = (AllowPrivateAccess = "true"))
-		float MovementSpeed = 1300.0f;
+		float MovementSpeed = 1500.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Damage", meta = (AllowPrivateAccess = "true"))
 		float Damage = 50.0f;
@@ -36,12 +39,11 @@ private:
 	UFUNCTION()
 		void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
-public:	
+public:
 	// Sets default values for this actor's properties
 	AProjectileBase();
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
 };

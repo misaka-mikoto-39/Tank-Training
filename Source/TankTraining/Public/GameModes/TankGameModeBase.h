@@ -6,12 +6,23 @@
 #include "GameFramework/GameModeBase.h"
 #include "TankGameModeBase.generated.h"
 
+class APawnTank;
+class APlayerControllerBase;
 /**
- * 
+ *
  */
 UCLASS()
 class TANKTRAINING_API ATankGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
-	
+private:
+	APawnTank* PlayerTank;
+	int32 NumOfEnermy = 0;
+	APlayerControllerBase* PlayerControllerRef;
+
+public:
+	void ActorDied(AActor* DeadActor);
+
+protected:
+	virtual void BeginPlay() override;
 };
