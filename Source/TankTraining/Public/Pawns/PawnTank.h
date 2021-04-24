@@ -34,6 +34,7 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Componenets", meta = (AllowPrivateAccess = "true"))
 		USceneComponent* TurretComp;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Componenets", meta = (AllowPrivateAccess = "true"))
 		UStaticMeshComponent* TurretMesh;
 
@@ -68,6 +69,9 @@ private:
 		UStaticMeshComponent* WheelFRMesh;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Componenets", meta = (AllowPrivateAccess = "true"))
+		USceneComponent* CameraComp;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Componenets", meta = (AllowPrivateAccess = "true"))
 		USpringArmComponent* SpringArm;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Componenets", meta = (AllowPrivateAccess = "true"))
@@ -82,10 +86,10 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement", meta = (AllowPrivateAccess = "true"))
 		float RotateSpeed = 100.0f;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement", meta = (AllowPrivateAccess = "true"))
-		float TurretRotateSpeed = 25.0f;
 
-	APlayerController* PlayerControllerRef;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement", meta = (AllowPrivateAccess = "true"))
+		float TurretRotateSpeed = 50.0f;
+
 	FVector MoveDirection;
 	WheelRotation LeftWheels = NONE;
 	WheelRotation RightWheels = NONE;
@@ -93,13 +97,14 @@ private:
 
 	void CalculateMoveInput(float Value);
 	void CalculateRotateInput(float Value);
+	void RotateCamera(float Value);
 	void Move();
 	void Rotate();
 	void RotateWheels();
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	void RotateTurret(FVector LookAtTarget);
+	void RotateTurret();
 	virtual void Fire();
 
 public:
