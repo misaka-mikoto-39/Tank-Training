@@ -44,3 +44,8 @@ void UHealthComponent::TakeDamage(AActor* DamageActor, float Damage, const UDama
 		}
 	}
 }
+
+float UHealthComponent::GetHealthPercent() const
+{
+	return Health / DefaultHealth;
+}

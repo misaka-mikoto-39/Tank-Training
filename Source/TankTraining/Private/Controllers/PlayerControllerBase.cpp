@@ -1,6 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Controllers/PlayerControllerBase.h"
+#include "Blueprint/UserWidget.h"
+
 
 void APlayerControllerBase::SetPlayerEnabledState(bool SetPlayerEnabled)
 {
@@ -14,4 +16,14 @@ void APlayerControllerBase::SetPlayerEnabledState(bool SetPlayerEnabled)
 	}
 
 	//bShowMouseCursor = SetPlayerEnabled;
+}
+
+void APlayerControllerBase::BeginPlay()
+{
+	Super::BeginPlay();
+	HUD = CreateWidget(this, GameplayWidget);
+	if (HUD != nullptr)
+	{
+		HUD->AddToViewport();
+	}
 }

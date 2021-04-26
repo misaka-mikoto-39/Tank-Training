@@ -88,6 +88,9 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Effects")
 		UParticleSystem* DeathParticle;
 
+	UPROPERTY(EditAnywhere, Category = "Effects")
+		UParticleSystem* ShootParticle;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement", meta = (AllowPrivateAccess = "true"))
 		float MoveSpeed = 100.0f;
 
@@ -97,11 +100,16 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement", meta = (AllowPrivateAccess = "true"))
 		float TurretRotateSpeed = 50.0f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true"))
+		float FireRate = 1.0f; // 1 per 1 second
+
 	FVector MoveDirection;
 	WheelRotation LeftWheels = NONE;
 	WheelRotation RightWheels = NONE;
 	FQuat RotationDirection;
 	bool IsAlive = true;
+	bool IsAmmoLoaded = true;
+	FTimerHandle FireRateTimerHandle;
 
 	void CalculateMoveInput(float Value);
 	void CalculateRotateInput(float Value);
@@ -126,4 +134,9 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	bool GetIsAlive();
+	void ReloadAmmo();
+	UFUNCTION(BlueprintPure)
+		float GetReloadPercent() const;
+	UFUNCTION(BlueprintPure)
+		bool GetIsAmmoLoaded() const;
 };

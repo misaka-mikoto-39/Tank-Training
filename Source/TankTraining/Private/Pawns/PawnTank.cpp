@@ -170,13 +170,16 @@ void APawnTank::RotateTurret()
 
 void APawnTank::Fire()
 {
-	if (ProjectileClass)
+	if (ProjectileClass && IsAmmoLoaded == true)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("Shoot"));
 		FVector SpawnLocation = ProjectileSpawnPoint->GetComponentLocation();
 		FRotator SpawnRotation = ProjectileSpawnPoint->GetComponentRotation();
-		//SpawnRotation.Yaw -= 90;
+		UGameplayStatics::SpawnEmitterAtLocation(this, ShootParticle, ProjectileSpawnPoint->GetComponentLocation(), ProjectileSpawnPoint->GetComponentRotation());
 		AProjectileBase* TempProjectile = GetWorld()->SpawnActor<AProjectileBase>(ProjectileClass, SpawnLocation, SpawnRotation);
 		TempProjectile->SetOwner(this);
+		IsAmmoLoaded = false;
+		GetWorld()->GetTimerManager().SetTimer(FireRateTimerHandle, this, &APawnTank::ReloadAmmo, FireRate, false, FireRate);
 	}
 }
 
@@ -215,3 +218,23 @@ bool APawnTank::GetIsAlive()
 {
 	return IsAlive;
 }
+
+void APawnTank::ReloadAmmo()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Reload"));
+	IsAmmoLoaded = true;
+}
+
+float APawnTank::GetReloadPercent() const
+{
+	if (GetWorld()->GetTimerManager().TimerExists(FireRateTimerHandle))
+	{
+		return GetWorld()->GetTimerManager().GetTimerElapsed(FireRateTimerHandle) / GetWorld()->GetTimerManager().GetTimerRate(FireRateTimerHandle);
+	}
+	return 1.0f;
+}
+bool APawnTank::GetIsAmmoLoaded() const
+{
+	return IsAmmoLoaded;
+}
+
