@@ -107,7 +107,6 @@ private:
 	WheelRotation LeftWheels = NONE;
 	WheelRotation RightWheels = NONE;
 	FQuat RotationDirection;
-	bool IsAlive = true;
 	bool IsAmmoLoaded = true;
 	FTimerHandle FireRateTimerHandle;
 
@@ -120,8 +119,6 @@ private:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	void RotateTurret();
-	virtual void Fire();
 	virtual void HandleDestruction();
 public:
 	// Sets default values for this pawn's properties
@@ -129,11 +126,14 @@ public:
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
+	FRotator GetTurretRotation() const;
 	void PawnDestroyed();
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-	bool GetIsAlive();
+	void RotateTurret(FRotator NewRotation);
+	virtual void Fire();
+	UFUNCTION(BlueprintPure)
+		bool IsDead() const;
 	void ReloadAmmo();
 	UFUNCTION(BlueprintPure)
 		float GetReloadPercent() const;

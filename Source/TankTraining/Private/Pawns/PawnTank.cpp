@@ -119,7 +119,7 @@ void APawnTank::Rotate()
 
 void APawnTank::RotateWheels()
 {
-	float RotateAmount;
+	float RotateAmount = 0.0f;
 	FRotator Rotation;
 	// Left Wheels
 	if (LeftWheels == FORWARD)
@@ -158,13 +158,11 @@ void APawnTank::BeginPlay()
 	Super::BeginPlay();
 }
 
-void APawnTank::RotateTurret()
+void APawnTank::RotateTurret(FRotator NewRotation)
 {
 	FRotator TurretRotation = TurretComp->GetComponentRotation();
-	/*float RotateAmount = FMath::FInterpConstantTo(TurretRotation.Yaw, CameraComp->GetComponentRotation().Yaw, GetWorld()->DeltaTimeSeconds, TurretRotateSpeed);
-	FRotator Rotation = FRotator(0, RotateAmount, 0);
-	TurretComp->AddLocalRotation(FQuat(Rotation), true);*/
-	TurretRotation.Yaw = CameraComp->GetComponentRotation().Yaw;//FMath::FInterpConstantTo(TurretRotation.Yaw, CameraComp->GetComponentRotation().Yaw, GetWorld()->DeltaTimeSeconds, TurretRotateSpeed);
+	//TurretRotation.Yaw = CameraComp->GetComponentRotation().Yaw;
+	TurretRotation.Yaw = NewRotation.Yaw;
 	TurretComp->SetWorldRotation(TurretRotation);
 }
 
@@ -190,8 +188,14 @@ void APawnTank::Tick(float DeltaTime)
 	Rotate();
 	Move();
 	RotateWheels();
-	RotateTurret();
+	RotateTurret(CameraComp->GetComponentRotation());
 }
+
+FRotator APawnTank::GetTurretRotation() const
+{
+	return TurretComp->GetComponentRotation();
+}
+
 
 // Called to bind functionality to input
 void APawnTank::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -206,7 +210,6 @@ void APawnTank::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 void APawnTank::HandleDestruction()
 {
 	UGameplayStatics::SpawnEmitterAtLocation(this, DeathParticle, GetActorLocation());
-	IsAlive = false;
 	SetActorHiddenInGame(true);
 	SetActorTickEnabled(false);
 	SetActorEnableCollision(false);
@@ -214,9 +217,13 @@ void APawnTank::HandleDestruction()
 	Destroy();
 }
 
-bool APawnTank::GetIsAlive()
+bool APawnTank::IsDead() const
 {
-	return IsAlive;
+	if (HealthComponent->GetHealth() == 0)
+	{
+		return true;
+	}
+	return false;
 }
 
 void APawnTank::ReloadAmmo()
