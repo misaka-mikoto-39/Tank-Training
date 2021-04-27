@@ -191,11 +191,15 @@ void APawnTank::Tick(float DeltaTime)
 	RotateTurret(CameraComp->GetComponentRotation());
 }
 
-FRotator APawnTank::GetTurretRotation() const
+FRotator APawnTank::GetCameraRotation() const
 {
-	return TurretComp->GetComponentRotation();
+	return CameraComp->GetComponentRotation();
 }
 
+void APawnTank::SetCameraRotation(FRotator NewRotation)
+{
+	CameraComp->AddLocalRotation(FQuat(NewRotation), false);
+}
 
 // Called to bind functionality to input
 void APawnTank::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -244,4 +248,3 @@ bool APawnTank::GetIsAmmoLoaded() const
 {
 	return IsAmmoLoaded;
 }
-

@@ -112,7 +112,6 @@ private:
 
 	void CalculateMoveInput(float Value);
 	void CalculateRotateInput(float Value);
-	void RotateCamera(float Value);
 	void Move();
 	void Rotate();
 	void RotateWheels();
@@ -126,8 +125,10 @@ public:
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-	FRotator GetTurretRotation() const;
+	FRotator GetCameraRotation() const;
+	void SetCameraRotation(FRotator NewRotation);
 	void PawnDestroyed();
+	void RotateCamera(float Value);
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	void RotateTurret(FRotator NewRotation);
