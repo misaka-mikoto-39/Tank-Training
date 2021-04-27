@@ -110,8 +110,6 @@ private:
 	bool IsAmmoLoaded = true;
 	FTimerHandle FireRateTimerHandle;
 
-	void CalculateMoveInput(float Value);
-	void CalculateRotateInput(float Value);
 	void Move();
 	void Rotate();
 	void RotateWheels();
@@ -129,10 +127,14 @@ public:
 	void SetCameraRotation(FRotator NewRotation);
 	void PawnDestroyed();
 	void RotateCamera(float Value);
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	void CalculateMoveInput(float Value);
+	void CalculateRotateInput(float Value);
 	void RotateTurret(FRotator NewRotation);
 	virtual void Fire();
+
+	// Called to bind functionality to input
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
 	UFUNCTION(BlueprintPure)
 		bool IsDead() const;
 	void ReloadAmmo();

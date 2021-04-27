@@ -24,6 +24,9 @@ EBTNodeResult::Type UBTTask_Shoot::ExecuteTask(UBehaviorTreeComponent& OwnerComp
 	{
 		return EBTNodeResult::Failed;
 	}
+	//stop moving
+	Tank->CalculateRotateInput(0);
+	Tank->CalculateMoveInput(0);
 	APawn* PlayerTank = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
 	if (PlayerTank == nullptr)
 	{
@@ -46,6 +49,7 @@ EBTNodeResult::Type UBTTask_Shoot::ExecuteTask(UBehaviorTreeComponent& OwnerComp
 	}
 	else
 	{
+		UE_LOG(LogTemp, Warning, TEXT("AI Shoot"));
 		//Tank->Fire();
 	}
 	return EBTNodeResult::Succeeded;

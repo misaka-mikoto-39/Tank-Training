@@ -1,8 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "AI/BTTask_MoveToLocation.h"
+#include "AI/TankAIController.h"
 #include "Pawns/PawnTank.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 UBTTask_MoveToLocation::UBTTask_MoveToLocation()
 {
@@ -21,28 +23,27 @@ EBTNodeResult::Type UBTTask_MoveToLocation::ExecuteTask(UBehaviorTreeComponent& 
 	{
 		return EBTNodeResult::Failed;
 	}
+
 	FVector TargetLocation = OwnerComp.GetBlackboardComponent()->GetValueAsVector(GetSelectedBlackboardKey());
-	/*
-	FVector LookAtTargetClean = FVector(PlayerTank->GetActorLocation().X, PlayerTank->GetActorLocation().Y, Tank->GetActorLocation().Z);
+	FVector LookAtTargetClean = FVector(TargetLocation.X, TargetLocation.Y, Tank->GetActorLocation().Z);
 	FVector StartLocation = Tank->GetActorLocation();
-	FRotator CameraRotation = Tank->GetCameraRotation();
-	FRotator TurretTargetRotation = FVector(LookAtTargetClean - StartLocation).Rotation();
-	if (FMath::FloorToInt(TurretTargetRotation.Yaw) != FMath::FloorToInt(CameraRotation.Yaw))
+	FRotator TankRotation = Tank->GetActorRotation();
+	FRotator TankTargetRotation = FVector(LookAtTargetClean - StartLocation).Rotation();
+	if (FMath::FloorToInt(TankTargetRotation.Yaw) != FMath::FloorToInt(TankRotation.Yaw))
 	{
-		if (TurretTargetRotation.Yaw > CameraRotation.Yaw)
+		if (TankTargetRotation.Yaw > TankRotation.Yaw)
 		{
-			Tank->RotateCamera(1);
+			Tank->CalculateRotateInput(1);
 		}
 		else
 		{
-			Tank->RotateCamera(-1);
+			Tank->CalculateRotateInput(-1);
 		}
 	}
 	else
 	{
-		//Tank->Fire();
+		UE_LOG(LogTemp, Warning, TEXT("Move to location"));
+		Tank->CalculateMoveInput(1);
 	}
-*/
-	UE_LOG(LogTemp, Warning, TEXT("Move to location"));
 	return EBTNodeResult::Succeeded;
 }
