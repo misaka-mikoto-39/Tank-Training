@@ -91,14 +91,15 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Effects")
 		UParticleSystem* ShootParticle;
 
+	UPROPERTY(EditAnywhere, Category = "Effects")
+		USoundBase* DeathSound;
+
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement", meta = (AllowPrivateAccess = "true"))
 		float MoveSpeed = 100.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement", meta = (AllowPrivateAccess = "true"))
 		float RotateSpeed = 100.0f;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement", meta = (AllowPrivateAccess = "true"))
-		float TurretRotateSpeed = 50.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true"))
 		float FireRate = 1.0f; // 1 per 1 second
@@ -131,7 +132,6 @@ public:
 	void CalculateRotateInput(float Value);
 	void RotateTurret(FRotator NewRotation);
 	virtual void Fire();
-
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 

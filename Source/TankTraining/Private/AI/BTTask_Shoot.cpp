@@ -49,8 +49,7 @@ EBTNodeResult::Type UBTTask_Shoot::ExecuteTask(UBehaviorTreeComponent& OwnerComp
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("AI Shoot"));
-		//Tank->Fire();
+		Tank->Fire();
 	}
 	return EBTNodeResult::Succeeded;
 }

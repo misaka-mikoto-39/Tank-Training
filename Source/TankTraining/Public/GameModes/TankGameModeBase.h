@@ -19,10 +19,13 @@ private:
 	APawnTank* PlayerTank;
 	int32 NumOfEnermy = 0;
 	APlayerControllerBase* PlayerControllerRef;
-
+	void HandleGameOver(bool IsPlayerWon);
+	int32 GetTargetTurretCount();
 public:
 	void ActorDied(AActor* DeadActor);
 
 protected:
 	virtual void BeginPlay() override;
+	UFUNCTION(BlueprintImplementableEvent)
+		void GameOver(bool IsPlayerWon);
 };

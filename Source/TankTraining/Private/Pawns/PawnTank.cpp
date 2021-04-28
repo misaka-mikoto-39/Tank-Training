@@ -170,7 +170,6 @@ void APawnTank::Fire()
 {
 	if (ProjectileClass && IsAmmoLoaded == true)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Shoot"));
 		FVector SpawnLocation = ProjectileSpawnPoint->GetComponentLocation();
 		FRotator SpawnRotation = ProjectileSpawnPoint->GetComponentRotation();
 		UGameplayStatics::SpawnEmitterAtLocation(this, ShootParticle, ProjectileSpawnPoint->GetComponentLocation(), ProjectileSpawnPoint->GetComponentRotation());
@@ -232,7 +231,6 @@ bool APawnTank::IsDead() const
 
 void APawnTank::ReloadAmmo()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Reload"));
 	IsAmmoLoaded = true;
 }
 

@@ -42,7 +42,6 @@ EBTNodeResult::Type UBTTask_MoveToLocation::ExecuteTask(UBehaviorTreeComponent& 
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Move to location"));
 		Tank->CalculateMoveInput(1);
 	}
 	return EBTNodeResult::Succeeded;
