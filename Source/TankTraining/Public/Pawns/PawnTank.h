@@ -83,7 +83,7 @@ private:
 
 	//VARIALES
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Projectile Type", meta = (AllowPrivateAccess = "true"))
-		TSubclassOf<AProjectileBase> ProjectileClass;
+		TSubclassOf<AActor> ProjectileClass;
 
 	UPROPERTY(EditAnywhere, Category = "Effects")
 		UParticleSystem* DeathParticle;
@@ -93,7 +93,6 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Effects")
 		USoundBase* DeathSound;
-
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement", meta = (AllowPrivateAccess = "true"))
 		float MoveSpeed = 100.0f;

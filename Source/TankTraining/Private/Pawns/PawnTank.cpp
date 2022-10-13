@@ -4,7 +4,7 @@
 #include "Components/BoxComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
-#include "Actors/ProjectileBase.h"
+#include "Actors/BounceProjectile.h"
 #include "Components/HealthComponent.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -173,7 +173,7 @@ void APawnTank::Fire()
 		FVector SpawnLocation = ProjectileSpawnPoint->GetComponentLocation();
 		FRotator SpawnRotation = ProjectileSpawnPoint->GetComponentRotation();
 		UGameplayStatics::SpawnEmitterAtLocation(this, ShootParticle, ProjectileSpawnPoint->GetComponentLocation(), ProjectileSpawnPoint->GetComponentRotation());
-		AProjectileBase* TempProjectile = GetWorld()->SpawnActor<AProjectileBase>(ProjectileClass, SpawnLocation, SpawnRotation);
+		ABounceProjectile* TempProjectile = GetWorld()->SpawnActor<ABounceProjectile>(ProjectileClass, SpawnLocation, SpawnRotation);
 		TempProjectile->SetOwner(this);
 		IsAmmoLoaded = false;
 		GetWorld()->GetTimerManager().SetTimer(FireRateTimerHandle, this, &APawnTank::ReloadAmmo, FireRate, false, FireRate);
